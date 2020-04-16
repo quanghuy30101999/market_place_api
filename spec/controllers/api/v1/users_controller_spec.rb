@@ -97,5 +97,15 @@ describe Api::V1::UsersController do
         end
       end
     end
+    describe "DELETE #destroy" do
+      before(:each) do
+        @user = FactoryBot.create :user
+        delete :destroy, params: { id: @user.id }, format: :json
+      end
+
+      it "should response 204" do
+        expect(response).to have_http_status(204)
+      end
+    end
   end
 end
