@@ -1,8 +1,9 @@
-require "spec_helper"
-
+require "rails_helper"
 describe Api::V1::UsersController do
-  before(:each) { request.headers["Accept"] = "application/vnd.marketplace.v1" }
-
+  before(:each) do
+    request.headers["Accept"] = "application/vnd.marketplace.v1, application/json" # Mime::JSON replaced with 'application/json'
+    request.headers["Content-Type"] = "application/json"
+  end
   describe "GET #show" do
     before(:each) do
       @user = FactoryBot.create(:user)
@@ -10,7 +11,7 @@ describe Api::V1::UsersController do
     end
 
     it "returns the information about a reporter on a hash" do
-      user_response = JSON.parse(response.body, symbolize_names: true)
+      user_response = json_response # this is the updated line
       expect(user_response[:email]).to eql @user.email
     end
 
