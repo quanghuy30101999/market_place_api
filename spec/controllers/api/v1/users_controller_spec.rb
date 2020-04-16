@@ -57,5 +57,45 @@ describe Api::V1::UsersController do
         expect(response).to have_http_status(422)
       end
     end
+    describe "PUT/PATCH #update" do
+      context "when is successfully updated" do
+        before(:each) do
+          @user = FactoryBot.create :user
+          patch :update, params: { id: @user.id,
+                                   user: { email: "newmail@example.com" } }, format: :json
+        end
+
+        it "renders the json representation for the updated user" do
+          user_response = JSON.parse(response.body, symbolize_names: true)
+          expect(user_response[:email]).to eql "newmail@example.com"
+        end
+
+        it "should response 200" do
+          expect(response).to have_http_status(200)
+        end
+      end
+
+      context "when is not created" do
+        before(:each) do
+          @user = FactoryBot.create :user
+          patch :update, params: { id: @user.id,
+                                   user: { email: "bademail.com" } }, format: :json
+        end
+
+        it "renders an errors json" do
+          user_response = JSON.parse(response.body, symbolize_names: true)
+          expect(user_response).to have_key(:errors)
+        end
+
+        it "renders the json errors on whye the user could not be created" do
+          user_response = JSON.parse(response.body, symbolize_names: true)
+          expect(user_response[:errors][:email]).to include "is invalid"
+        end
+
+        it "should response 422" do
+          expect(response).to have_http_status(422)
+        end
+      end
+    end
   end
 end
