@@ -39,11 +39,13 @@ describe Api::V1::SessionsController do
   end
   describe "DELETE #destroy" do
     before(:each) do
-      @user = FactoryGirl.create :user
-      sign_in @user, store: false
-      delete :destroy, id: @user.auth_token
+      @user = FactoryBot.create :user
+      sign_in @user
+      delete :destroy, params: { id: @user.auth_token }
     end
 
-    it { should respond_with 204 }
+    it "should response 204" do
+      expect(response).to have_http_status(204)
+    end
   end
 end
